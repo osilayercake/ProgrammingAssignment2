@@ -20,7 +20,10 @@ makeCacheMatrix <- function(x = matrix()) {
     get <- function() x # Defines a fucntion that returns the original Matrix 'x'
     set_inverse <- function(inv) m <<- inv # Stores the inverse in the cache variable 'm'
     get_inverse <- function() m # Defines a function that returns the cached value 
-    list(set = set, get = get,
+    
+    # A 'class' in R is some strange "list of functions" type thing which sort of
+    # makes sense, but my gosh does it make for some clunky syntax.
+    list(set = set, get = get, 
          set_inverse = set_inverse,
          get_inverse = get_inverse)
 }
@@ -30,15 +33,22 @@ cacheSolve <- function(x, ...) {
     ## it first checks if the matrix has a previously calculated inverse and returns 
     ## that object if it is not NULL otherwise it calcualtes the inverse and returns
     ## it and also caches it in the object for future use.
-    m <- x$get_inverse()
+    
+    m <- x$get_inverse() # The the value of 'm' from the above object
+    
+    # If it is not null return it as the cached value.
     if(!is.null(m)) {
         message("getting cached data")
-        return(m)
+        return(m) # By having an explicit return here it stops the rest of the 
+                  # rest of the function beng executed.
     }
+    
+    # If 'm' is null, calculate the inverse and assign it back t the object
+    # before returning the value.
     data <- x$get()
     m <- solve(data)
     x$set_inverse(m)
-    m
+    return(m) #Make the return explicit as it's much clearer that way.
 }
 
 ## Examples from the course notes
